@@ -1,0 +1,34 @@
+name: PD2_HW_CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Compile and Test All Homeworks
+      run: |
+        for dir in $(ls -d HW*/); do
+          echo "--------------------------------------"
+          echo "Processing directory: $dir"
+          raw_name=${dir%/}
+          exec_name="${raw_name}.out"
+          g++ -std=c++11 "$dir"*.cpp -o "$exec_name"
+          if [ $? -eq 0 ]; then
+            echo "✅ $raw_name compiled successfully!"
+            echo "Executing test run..."
+            ./"$exec_name" < /dev/null
+            echo "✅ $raw_name execution completed!"
+          else
+            echo "❌ $raw_name compilation failed!"
+            exit 1
+          fi
+        done
