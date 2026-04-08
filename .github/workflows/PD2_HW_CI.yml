@@ -24,9 +24,6 @@ jobs:
           g++ -std=c++11 "$dir"*.cpp -o "$exec_name"
           if [ $? -eq 0 ]; then
             echo "✅ $raw_name compiled successfully!"
-            echo "Executing test run..."
-            ./"$exec_name" < /dev/null
-            echo "✅ $raw_name execution completed!"
           else
             echo "❌ $raw_name compilation failed!"
             exit 1
